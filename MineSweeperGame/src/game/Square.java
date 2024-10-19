@@ -1,9 +1,12 @@
 package game;
 
 public class Square {
-	int value;
-	String status;
-	boolean isFlag=false;
+	//value - 0(Empty)
+	//value - -1(bomb)
+	//value - >0(Count the bomb around the cell
+	int value;   
+	String status;//reveal or not
+	boolean isFlag=false; //set flag or not
 	public int getValue() {
 		return value;
 	}
