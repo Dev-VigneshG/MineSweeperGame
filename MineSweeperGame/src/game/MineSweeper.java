@@ -12,6 +12,7 @@ public class MineSweeper {
 	private Random random;
 	public MineSweeper(int rows,int columns)
 	{
+		//setting rows and columns
 		this.rows=rows;
 		this.columns=columns;
 		scanner=new Scanner(System.in);
@@ -41,6 +42,7 @@ public class MineSweeper {
 		this.isGameOver = isGameOver;
 	}
 
+	//this method used to create the board
 	public void createBoard()
 	{
 		board=new Square[rows][columns];
@@ -52,8 +54,10 @@ public class MineSweeper {
 			}
 		}
 		System.out.println("Enter Row & Column to open :");
+		//getting 1st cell to open
 		int r=scanner.nextInt();
 		int c=scanner.nextInt();
+		//getting no of bombs to set
 		System.out.println("Enter No of Bombs");
 		int noOfBombs=scanner.nextInt();
 		setNumberOfBombs(noOfBombs);
@@ -72,19 +76,32 @@ public class MineSweeper {
 					bomb++;
 			}
 		}
+		//reveal the cell
 		reveal(r,c);
+		//reveal the adjacent cell
+		for(int i=r;i<=r+1;i++)
+		{
+			for(int j=c-1;j<=c+1;j++)
+			{
+				//skip the current cell already revealed
+				if(i==r&&j==c) continue;
+				revealAdjacent(i,j);		
+			}
+		}
 
 
 	}
+	//this method used to check given position is inside the board boundary
 	public boolean isValid(int row,int column)
 	{
 		if(row>=0&&column>=0&&row<rows&&column<columns)
 			return true;
 		return false;
 	}
-
+	//this method used to play the game
 	public void play()
 	{
+		//play the game until win or lose 
 		while(!isGameOver()&&!isWin())
 		{
 			display();
@@ -95,21 +112,25 @@ public class MineSweeper {
 			System.out.println("1.Set/Remove Flag");
 			System.out.println("2.Reveal");
 			int choice=scanner.nextInt();
+			//Set or remove flag toggle the flag
 			if(choice==1)
 			{
 				toggleFlag(r,c);
 
 			}
+			//reveal the cell
 			else if(choice==2)
 			{
 				reveal(r,c);
 			}
 		}
+		//if lose 
 		if(isGameOver())
 		{
 			System.out.println("Game over!");
 			System.out.print("Score:"+getScore());
 		}
+		//if win
 		else if(isWin())
 		{
 			System.out.println("Congrats!.You win the game!!");
@@ -117,13 +138,18 @@ public class MineSweeper {
 		}
 
 	}
+	//this method used to reveal the adjacent cells(Square)
 	public void revealAdjacent(int row,int column)
 	{
+		//reveal the adjacent until get the >0 value using recursion
+
+		//base condition
 		if(isValid(row,column)&&board[row][column].getValue()>0&&board[row][column].getStatus()=="not reveal") 
 		{
 			board[row][column].setStatus("reveal");
 			score++;
-			return;}
+			return;
+		}
 		if(isValid(row,column)&&(board[row][column].getStatus()=="not reveal")&&(board[row][column].getValue()==0))
 		{
 			board[row][column].setStatus("reveal");
@@ -138,6 +164,7 @@ public class MineSweeper {
 			}
 		}
 	}
+	//this method used to reveal the particular square
 	public void reveal(int row,int column)
 	{
 		if(!isValid(row,column))
@@ -163,10 +190,12 @@ public class MineSweeper {
 			System.out.println("Already Revealed");
 		}
 	}
+	//change the flag set or remove
 	public void toggleFlag(int r,int c)
 	{
 		board[r][c].isFlag=!board[r][c].isFlag;
 	}
+	//used to display the board
 	public void display()
 	{
 		for(int row=0;row<rows;row++)
@@ -178,11 +207,12 @@ public class MineSweeper {
 			System.out.println();
 		}
 	}
+	//set the bomb in particular pos
 	public boolean setBomb(int row,int column)
 	{
 		if(isValid(row,column)&&board[row][column].value!=-1)
 		{
-			board[row][column]=new Square(-1,"reveal");
+			board[row][column]=new Square(-1,"not reveal");
 			for(int i=row-1;i<=row+1;i++)
 			{
 				for(int j=column-1;j<=column+1;j++)
@@ -201,7 +231,7 @@ public class MineSweeper {
 		}
 		return true;
 	}
-
+    //check bomb or not
 	public boolean isBomb(int row,int column)
 	{
 		if(board[row][column].getValue()==-1)
@@ -223,7 +253,7 @@ public class MineSweeper {
 	public void setRows(int rows) {
 		this.rows = rows;
 	}
-
+    //check user win or not
 	public boolean isWin()
 	{
 		if((getScore()+getNumberOfBombs())==(getRows()*getColumns()))
